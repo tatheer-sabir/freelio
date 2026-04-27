@@ -13,7 +13,7 @@ class freelio extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Text("This is me"),
+        body: Text(" amara and tatheer"),
       ),
       // routes: {
       //   "/" : (context) => Dashboardscreen(),
