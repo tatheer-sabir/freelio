@@ -32,7 +32,8 @@ class Welcomescreen2 extends StatelessWidget {
               icon: const Icon(Icons.arrow_forward),
               label: const Text("Continue"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.teal,
+                foregroundColor: Colors.black,
               ),
             ),
           ],
@@ -107,12 +108,12 @@ class Welcomescreen2 extends StatelessWidget {
                     height: index == activeIndex ? 10 : 8,
                     decoration: BoxDecoration(
                       color:
-                      index == activeIndex ? Colors.blue : Colors.grey,
+                      index == activeIndex ? Colors.teal : Colors.grey,
                       shape: BoxShape.circle,
                       boxShadow: index == activeIndex
                           ? [
                         BoxShadow(
-                          color: Colors.blue.withOpacity(0.7),
+                          color: Colors.pink.withOpacity(0.7),
                           blurRadius: 6,
                           spreadRadius: 1,
                         )
