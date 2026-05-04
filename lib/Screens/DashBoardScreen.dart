@@ -10,13 +10,15 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int currentIndex = 0;
 
-  // 🎨 THEME COLORS
-  final Color primaryTeal = const Color(0xA8006056);
-  final Color darkTeal = const Color(0xFF00C5AB);
-  final Color lightTeal = const Color(0xFF10423A);
-  final Color backgroundGrey = const Color(0xFFBABABA);
-  final Color softGrey = const Color(0xFF6B7577);
-  final Color darkText = const Color(0xFF10423A);
+  // ── Freelio Brand Colors ──────────────────
+  static const Color kPrimary       = Color(0xFF29B2FE); // Freelancer blue
+  static const Color kBackground    = Color(0xFFFFFFFF); // clean white
+  static const Color kSurface       = Color(0xFFE8F6FF); // light blue tint
+  static const Color kTextPrimary   = Color(0xFF0A1628); // dark navy
+  static const Color kTextSecondary = Color(0xFF1D5C97); // mid blue
+  static const Color kDivider       = Color(0xFFBFE4FF); // soft blue divider
+  static const Color kDark          = Color(0xFF1D5C97); // dark blue
+  // ─────────────────────────────────────────
 
   final List<Map<String, String>> tasks = [
     {"title": "Design dashboard UI", "status": "In Progress"},
@@ -32,27 +34,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text("Add Task", style: TextStyle(color: darkTeal)),
+          backgroundColor: kBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text("Add Task", style: TextStyle(color: kTextPrimary, fontWeight: FontWeight.w700)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: taskController,
+                style: TextStyle(color: kTextPrimary),
                 decoration: InputDecoration(
                   hintText: "Enter task name",
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: primaryTeal),
+                  hintStyle: TextStyle(color: kTextSecondary.withOpacity(0.4)),
+                  filled: true,
+                  fillColor: kSurface,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: kPrimary, width: 1.5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: kDivider, width: 1),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 value: selectedStatus,
+                dropdownColor: kBackground,
                 items: ["Pending", "In Progress", "Done"]
                     .map((status) => DropdownMenuItem(
                   value: status,
-                  child: Text(status),
+                  child: Text(status, style: TextStyle(color: kTextPrimary)),
                 ))
                     .toList(),
                 onChanged: (value) {
@@ -60,7 +73,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
                 decoration: InputDecoration(
                   labelText: "Status",
-                  labelStyle: TextStyle(color: darkTeal),
+                  labelStyle: TextStyle(color: kTextSecondary),
+                  filled: true,
+                  fillColor: kSurface,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: kPrimary, width: 1.5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: kDivider, width: 1),
+                  ),
                 ),
               ),
             ],
@@ -68,11 +91,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel", style: TextStyle(color: softGrey)),
+              child: Text("Cancel", style: TextStyle(color: kTextSecondary)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: primaryTeal,
+                backgroundColor: kPrimary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
               onPressed: () {
                 if (taskController.text.isNotEmpty) {
@@ -108,29 +134,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
       Navigator.pushNamed(context, "/clientpage");
     } else if (index == 3) {
       Navigator.pushNamed(context, "/payement");
+    } else if (index == 4) {
+      Navigator.pushNamed(context, "/deadline");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundGrey,
+      backgroundColor: kSurface,
 
       appBar: AppBar(
-        backgroundColor: Colors.teal[800],
+        backgroundColor: kPrimary,
         elevation: 0,
-        title: Text("Dashboard", style: TextStyle(color: Colors.grey[300])),
-        iconTheme: IconThemeData(color: darkTeal),
+        title: const Text("Dashboard", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
       drawer: Drawer(
+        backgroundColor: kBackground,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [darkTeal, primaryTeal],
+                  colors: [kPrimary, kDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
               child: const Column(
@@ -156,49 +187,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
             ListTile(
-              leading: Icon(Icons.dashboard, color: primaryTeal),
-              title: const Text("Dashboard"),
+              leading: Icon(Icons.dashboard, color: kPrimary),
+              title: Text("Dashboard", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/dashboard"),
             ),
             ListTile(
-              leading: Icon(Icons.folder, color: primaryTeal),
-              title: const Text("Projects"),
+              leading: Icon(Icons.folder, color: kPrimary),
+              title: Text("Projects", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/projectpage"),
             ),
             ListTile(
-              leading: Icon(Icons.person, color: primaryTeal),
-              title: const Text("Clients"),
+              leading: Icon(Icons.person, color: kPrimary),
+              title: Text("Clients", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/clientpage"),
             ),
             ListTile(
-              leading: Icon(Icons.payment, color: primaryTeal),
-              title: const Text("Payments"),
+              leading: Icon(Icons.payment, color: kPrimary),
+              title: Text("Payments", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/payement"),
             ),
 
-            const Divider(),
+            Divider(color: kDivider),
 
             ListTile(
-              leading: Icon(Icons.notifications, color: primaryTeal),
-              title: const Text("Notifications"),
+              leading: Icon(Icons.notifications, color: kPrimary),
+              title: Text("Notifications", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/notifications"),
             ),
             ListTile(
-              leading: Icon(Icons.call, color: primaryTeal),
-              title: const Text("Contact Us"),
+              leading: Icon(Icons.call, color: kPrimary),
+              title: Text("Contact Us", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/contactus"),
             ),
             ListTile(
-              leading: Icon(Icons.share, color: primaryTeal),
-              title: const Text("share with friend"),
+              leading: Icon(Icons.share, color: kPrimary),
+              title: Text("Share with Friend", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/sharing"),
             ),
             ListTile(
-              leading: Icon(Icons.settings, color: primaryTeal),
-              title: const Text("Profile & Account"),
+              leading: Icon(Icons.settings, color: kPrimary),
+              title: Text("Profile & Account", style: TextStyle(color: kTextPrimary)),
               onTap: () => Navigator.pushNamed(context, "/profile"),
             ),
-
           ],
         ),
       ),
@@ -209,13 +239,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              // ── Welcome Banner ──────────────────────────
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
                 margin: const EdgeInsets.only(bottom: 15),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [primaryTeal, lightTeal],
+                    colors: [kPrimary, kDark],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -223,7 +257,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Welcome back 👋",
-                        style: TextStyle(color: Colors.white)),
+                        style: TextStyle(color: Colors.white70)),
                     SizedBox(height: 6),
                     Text(
                       "Manage your work efficiently",
@@ -236,13 +270,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
+              // ────────────────────────────────────────────
 
               Text(
                 "Your Overview",
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: darkText,
+                  color: kTextPrimary,
                 ),
               ),
 
@@ -258,14 +293,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: darkText,
+                      color: kTextPrimary,
                     ),
                   ),
                   ElevatedButton(
                     onPressed: showAddTaskDialog,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: primaryTeal,
+                      backgroundColor: kPrimary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     child: const Text("Add Task"),
                   ),
@@ -273,7 +311,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
 
               const SizedBox(height: 10),
-              _TaskBox(tasks: tasks, primaryTeal: primaryTeal),
+              _TaskBox(tasks: tasks, primaryBlue: kPrimary),
             ],
           ),
         ),
@@ -283,14 +321,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
         onTap: onTap,
-        selectedItemColor: primaryTeal,
-        unselectedItemColor: softGrey,
-        backgroundColor: Colors.white,
+        selectedItemColor: kPrimary,
+        unselectedItemColor: kTextSecondary.withOpacity(0.5),
+        backgroundColor: kBackground,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.folder), label: "Projects"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
           BottomNavigationBarItem(icon: Icon(Icons.payment), label: "Payment"),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: "Deadline"),
         ],
       ),
     );
@@ -321,9 +360,9 @@ class _StatGrid extends StatelessWidget {
 /* ================= TASK BOX ================= */
 class _TaskBox extends StatelessWidget {
   final List<Map<String, String>> tasks;
-  final Color primaryTeal;
+  final Color primaryBlue;
 
-  const _TaskBox({required this.tasks, required this.primaryTeal});
+  const _TaskBox({required this.tasks, required this.primaryBlue});
 
   @override
   Widget build(BuildContext context) {
@@ -332,7 +371,7 @@ class _TaskBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFECEFF1)),
+        border: Border.all(color: const Color(0xFFBFE4FF)),
       ),
       child: Column(
         children: [
@@ -342,12 +381,15 @@ class _TaskBox extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFECEFF1)),
+                border: Border.all(color: const Color(0xFFBFE4FF)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(task["title"]!),
+                  Text(
+                    task["title"]!,
+                    style: const TextStyle(color: Color(0xFF0A1628)),
+                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 5),
@@ -355,8 +397,8 @@ class _TaskBox extends StatelessWidget {
                       color: task["status"] == "Done"
                           ? Colors.green.shade100
                           : task["status"] == "In Progress"
-                          ? Colors.teal.shade100
-                          : Colors.grey.shade300,
+                          ? const Color(0xFFE8F6FF)
+                          : Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -364,9 +406,9 @@ class _TaskBox extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         color: task["status"] == "Done"
-                            ? Colors.teal
+                            ? Colors.green.shade700
                             : task["status"] == "In Progress"
-                            ? primaryTeal
+                            ? primaryBlue
                             : Colors.grey,
                       ),
                     ),
@@ -389,28 +431,26 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryTeal = const Color(0xFF00897B);
-    final Color darkText = const Color(0xFF263238);
-
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFBFE4FF)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.analytics, color: primaryTeal),
+          const Icon(Icons.analytics, color: Color(0xFF29B2FE)),
           const SizedBox(height: 6),
-          Text(title, style: const TextStyle(color: Colors.grey)),
+          Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 6),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: darkText,
+              color: Color(0xFF0A1628),
             ),
           ),
         ],
