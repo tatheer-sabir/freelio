@@ -8,28 +8,59 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final Color darkTeal = const Color(0xFF195A51);
+
+  // ✅ SAFE INDEX
+  int currentIndex = 3;
+
+  // 🎨 COLORS
+  static const Color kPrimary       = Color(0xFF29B2FE);
+  static const Color kBackground    = Color(0xFFFFFFFF);
+  static const Color kSurface       = Color(0xFFE8F6FF);
+  static const Color kTextSecondary = Color(0xFF1D5C97);
+  static const Color kDivider       = Color(0xFFBFE4FF);
+  static const Color kDark          = Color(0xFF1D5C97);
 
   List<Map<String, dynamic>> payments = [
     {"name": "Ali Ahmed", "amount": "5000", "status": "Paid"},
     {"name": "Sara Khan", "amount": "3200", "status": "Pending"},
     {"name": "Usman Tariq", "amount": "7800", "status": "Paid"},
     {"name": "Ayesha Malik", "amount": "1500", "status": "Pending"},
-    {"name": "Hassan Ali", "amount": "9000", "status": "Paid"},
-    {"name": "Zainab Noor", "amount": "4100", "status": "Paid"},
-    {"name": "Bilal Ahmed", "amount": "2500", "status": "Pending"},
   ];
 
   String searchQuery = "";
-  String filter = "All"; // All / Paid / Pending
+  String filter = "All";
 
   final searchController = TextEditingController();
 
+  // ✅ SAFE NAVIGATION (NO STACK BUILDUP)
+  void onTap(int index) {
+    if (index == currentIndex) return;
+
+    setState(() => currentIndex = index);
+
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, "/dashboard");
+        break;
+      case 1:
+        Navigator.pushReplacementNamed(context, "/projectpage");
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, "/clientpage");
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(context, "/payement");
+        break;
+      case 4:
+        Navigator.pushReplacementNamed(context, "/deadline");
+        break;
+    }
+  }
+
   List<Map<String, dynamic>> get filteredPayments {
     return payments.where((p) {
-      final nameMatch = p["name"]
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase());
+      final nameMatch =
+      p["name"].toLowerCase().contains(searchQuery.toLowerCase());
 
       final statusMatch =
       filter == "All" ? true : p["status"] == filter;
@@ -57,46 +88,148 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB8B6B6),
+      backgroundColor: kSurface,
 
+      // ✅ APPBAR
       appBar: AppBar(
-        backgroundColor: darkTeal,
-        title: const Text("Payments",
-            style: TextStyle(color: Colors.white)),
+        backgroundColor: kPrimary,
+        title: const Text("Payments"),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
 
+      // ✅ DRAWER
+      drawer: Drawer(
+        backgroundColor: kBackground,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [kPrimary, kDark],
+                ),
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.person, color: Colors.white, size: 40),
+                  SizedBox(height: 10),
+                  Text(
+                    "Freelio",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Welcome Back!",
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: kPrimary),
+              title: const Text("Dashboard"),
+              onTap: () => Navigator.pushNamed(context, "/dashboard"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.folder, color: kPrimary),
+              title: const Text("Projects"),
+              onTap: () => Navigator.pushNamed(context, "/projectpage"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.person, color: kPrimary),
+              title: const Text("Clients"),
+              onTap: () => Navigator.pushNamed(context, "/clientpage"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.payment, color: kPrimary),
+              title: const Text("Payments"),
+              onTap: () => Navigator.pushNamed(context, "/payement"),
+            ),
+
+            Divider(color: kDivider),
+
+            ListTile(
+              leading: const Icon(Icons.notifications, color: kPrimary),
+              title: const Text("Notifications"),
+              onTap: () => Navigator.pushNamed(context, "/notifications"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.share, color: kPrimary),
+              title: const Text("Share with Friend"),
+              onTap: () => Navigator.pushNamed(context, "/sharing"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.call, color: kPrimary),
+              title: const Text("Contact Us"),
+              onTap: () => Navigator.pushNamed(context, "/contactus"),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.settings, color: kPrimary),
+              title: const Text("Profile & Account"),
+              onTap: () => Navigator.pushNamed(context, "/profile"),
+            ),
+          ],
+        ),
+      ),
+      // ✅ BOTTOM NAV (SAFE INDEX)
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex.clamp(0, 4), // 🔥 FIXED
+        type: BottomNavigationBarType.fixed,
+        onTap: onTap,
+        selectedItemColor: kPrimary,
+        unselectedItemColor: kTextSecondary.withOpacity(0.5),
+        backgroundColor: kBackground,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: "Projects"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
+          BottomNavigationBarItem(icon: Icon(Icons.payment), label: "Payment"),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: "Deadline"),
+        ],
+      ),
+
+      // ✅ BODY
       body: Column(
         children: [
 
-          // 💳 SUMMARY
+          // SUMMARY
           Container(
             width: double.infinity,
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: darkTeal,
+              color: kDark,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text(
               "Total Paid: PKR ${getTotalPaid()}",
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
 
-          // 🔍 SEARCH BAR
+          // SEARCH
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               controller: searchController,
               onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
+                setState(() => searchQuery = value);
               },
               decoration: InputDecoration(
                 hintText: "Search client...",
@@ -110,28 +243,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
           const SizedBox(height: 10),
 
-          // 🎛 FILTER BUTTONS
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-
-                filterButton("All"),
-                filterButton("Paid"),
-                filterButton("Pending"),
-              ],
-            ),
+          // FILTER
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              filterButton("All"),
+              filterButton("Paid"),
+              filterButton("Pending"),
+            ],
           ),
 
           const SizedBox(height: 10),
 
-          // 📋 LIST
+          // LIST
           Expanded(
             child: filteredPayments.isEmpty
-                ? const Center(
-              child: Text("No payments found"),
-            )
+                ? const Center(child: Text("No payments found"))
                 : ListView.builder(
               itemCount: filteredPayments.length,
               itemBuilder: (context, i) {
@@ -149,40 +276,35 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     mainAxisAlignment:
                     MainAxisAlignment.spaceBetween,
                     children: [
-
                       Column(
                         crossAxisAlignment:
                         CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            p["name"],
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600),
-                          ),
+                          Text(p["name"],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600)),
                           Text("PKR ${p["amount"]}"),
                         ],
                       ),
-
                       Row(
                         children: [
-
                           Checkbox(
                             value: p["status"] == "Paid",
-                            activeColor: Colors.teal,
                             onChanged: (value) {
-                              // find real index in original list
-                              int realIndex = payments.indexOf(p);
+                              int realIndex =
+                              payments.indexOf(p);
                               toggleStatus(realIndex, value!);
                             },
                           ),
-
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
+                            padding:
+                            const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5),
                             decoration: BoxDecoration(
                               color: p["status"] == "Paid"
-                                  ? Colors.grey
-                                  : Colors.teal,
+                                  ? Colors.blueGrey
+                                  : Colors.lightBlue,
                               borderRadius:
                               BorderRadius.circular(10),
                             ),
@@ -210,14 +332,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor:
-        filter == type ? darkTeal : Colors.grey.shade300,
+        filter == type ? kDark : Colors.grey.shade300,
         foregroundColor:
         filter == type ? Colors.white : Colors.black,
       ),
       onPressed: () {
-        setState(() {
-          filter = type;
-        });
+        setState(() => filter = type);
       },
       child: Text(type),
     );

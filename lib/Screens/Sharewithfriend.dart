@@ -4,9 +4,11 @@ import 'package:share_plus/share_plus.dart';
 class ShareScreen extends StatelessWidget {
   const ShareScreen({super.key});
 
-  final Color darkTeal = const Color(0xFF195A51);
+  static const Color kPrimary = Color(0xFF29B2FE);
+  static const Color kDark    = Color(0xFF1D5C97);
+  static const Color kSurface = Color(0xFFE8F6FF);
+  static const Color kWhite   = Color(0xFFFFFFFF);
 
-  // 🔗 Share function
   void shareApp() {
     Share.share(
       "Check out this amazing app 🚀\n\nDownload now:\nhttps://yourapplink.com",
@@ -16,45 +18,53 @@ class ShareScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
+      backgroundColor: kSurface,
 
+      // ✅ APPBAR WITH BACK BUTTON ONLY
       appBar: AppBar(
-        backgroundColor: darkTeal,
+        backgroundColor: kPrimary,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: const Text(
           "Share with Friends",
           style: TextStyle(color: Colors.white),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
+      // ✅ BODY
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
-            // 🎯 HEADER
+            // HEADER CARD
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                color: darkTeal,
-                borderRadius: BorderRadius.circular(16),
+                gradient: const LinearGradient(
+                  colors: [kPrimary, kDark],
+                ),
+                borderRadius: BorderRadius.circular(18),
               ),
               child: const Column(
                 children: [
-                  Icon(Icons.share, color: Colors.white, size: 40),
-                  SizedBox(height: 10),
+                  Icon(Icons.share, color: Colors.white, size: 50),
+                  SizedBox(height: 12),
                   Text(
-                    "Share this App",
+                    "Share This App",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 6),
                   Text(
-                    "Invite your friends to use this app",
+                    "Invite your friends and grow together 🚀",
                     style: TextStyle(color: Colors.white70),
                     textAlign: TextAlign.center,
                   ),
@@ -62,17 +72,17 @@ class ShareScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
 
-            // 📲 SHARE BUTTON
+            // SHARE BUTTON
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: darkTeal,
+                  backgroundColor: kPrimary,
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
                 icon: const Icon(Icons.share, color: Colors.white),
@@ -86,9 +96,8 @@ class ShareScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 💡 INFO TEXT
             const Text(
-              "You can share via WhatsApp, Instagram, Email, and more.",
+              "Share via WhatsApp, Instagram, Email, and more",
               style: TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
             ),

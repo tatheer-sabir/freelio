@@ -5,22 +5,29 @@ class ClientDetailScreen extends StatelessWidget {
 
   const ClientDetailScreen({super.key, required this.client});
 
+  // 🎨 APP THEME COLORS
+  static const Color kPrimary    = Color(0xFF29B2FE);
+  static const Color kDark       = Color(0xFF1D5C97);
+  static const Color kSurface    = Color(0xFFE8F6FF);
+  static const Color kBackground = Color(0xFFFFFFFF);
+  static const Color kTextGrey   = Color(0xFF6B7C93);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
+      backgroundColor: kSurface,
 
+      // ✅ APPBAR
       appBar: AppBar(
-        backgroundColor: const Color(0xFF195A51), // darkTeal
-        title: Text(client["name"] ?? "Client Detail"),
-        iconTheme: const IconThemeData(color: Colors.white),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
+        backgroundColor: kPrimary,
+        title: Text(
+          client["name"] ?? "Client Detail",
+          style: const TextStyle(color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
+      // ✅ BODY
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -43,32 +50,37 @@ class ClientDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: kBackground,
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           )
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           Text(
             label,
             style: const TextStyle(
               fontSize: 12,
-              color: Colors.grey,
+              color: kTextGrey,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 4),
+
+          const SizedBox(height: 6),
+
           Text(
             value ?? "-",
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
+              color: kDark,
             ),
           ),
         ],

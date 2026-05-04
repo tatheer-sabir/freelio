@@ -9,13 +9,17 @@ class ClientListScreen extends StatefulWidget {
 }
 
 class _ClientListScreenState extends State<ClientListScreen> {
-  // 🎨 COLORS
-  final Color primary = const Color(0xFF00C5AB);
-  final Color dark = const Color(0xFF195A51);
-  final Color bg = const Color(0xFFBABABA);
-  final Color textDark = const Color(0xFF10423A);
 
-  // 📌 DATA
+  int currentIndex = 2;
+
+  static const Color kPrimary       = Color(0xFF29B2FE);
+  static const Color kBackground    = Color(0xFFFFFFFF);
+  static const Color kSurface       = Color(0xFFE8F6FF);
+  static const Color kTextPrimary   = Color(0xFF0A1628);
+  static const Color kTextSecondary = Color(0xFF1D5C97);
+  static const Color kDivider       = Color(0xFFBFE4FF);
+  static const Color kDark          = Color(0xFF1D5C97);
+
   List<Map<String, String>> clients = [
     {
       "name": "Ali Ahmed",
@@ -37,10 +41,8 @@ class _ClientListScreenState extends State<ClientListScreen> {
     },
   ];
 
-  // 🔍 SEARCH
   TextEditingController searchController = TextEditingController();
 
-  // ➕ FORM
   final name = TextEditingController();
   final company = TextEditingController();
   final email = TextEditingController();
@@ -50,7 +52,24 @@ class _ClientListScreenState extends State<ClientListScreen> {
 
   int? editIndex;
 
-  // 🧠 FILTER
+  void onTap(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+
+    if (index == 0) {
+      Navigator.pushNamed(context, "/dashboard");
+    } else if (index == 1) {
+      Navigator.pushNamed(context, "/projectpage");
+    } else if (index == 2) {
+      Navigator.pushNamed(context, "/clientpage");
+    } else if (index == 3) {
+      Navigator.pushNamed(context, "/payement");
+    } else if (index == 4) {
+      Navigator.pushNamed(context, "/deadline");
+    }
+  }
+
   List<Map<String, String>> get filteredClients {
     final q = searchController.text.toLowerCase();
 
@@ -73,7 +92,6 @@ class _ClientListScreenState extends State<ClientListScreen> {
     super.dispose();
   }
 
-  // ➕ ADD / EDIT
   void openSheet({int? index}) {
     if (index != null) {
       final c = clients[index];
@@ -117,30 +135,23 @@ class _ClientListScreenState extends State<ClientListScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: dark,
+                    color: kDark,
                   ),
                 ),
-
                 const SizedBox(height: 10),
-
                 _field("Name", name),
                 _field("Company", company),
                 _field("Email", email),
                 _field("Phone", phone),
                 _field("Address", address),
                 _field("Notes", notes),
-
                 const SizedBox(height: 20),
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: dark,
+                      backgroundColor: kDark,
                       padding: const EdgeInsets.all(14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                     ),
                     onPressed: () {
                       setState(() {
@@ -169,7 +180,6 @@ class _ClientListScreenState extends State<ClientListScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
               ],
             ),
@@ -205,201 +215,274 @@ class _ClientListScreenState extends State<ClientListScreen> {
   Color statusColor(String status) {
     switch (status) {
       case "VIP":
-        return Colors.orange;
+        return Colors.blueGrey;
       case "Lead":
         return Colors.blue;
       default:
-        return Colors.green;
+        return Colors.lightBlueAccent;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: kSurface,
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: dark,
-        onPressed: () => openSheet(),
-        child: const Icon(Icons.add, color: Colors.white),
+      appBar: AppBar(
+        backgroundColor: kPrimary,
+        title: const Text("Clients"),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
-      body: SafeArea(
-        child: Column(
+      drawer: Drawer(
+        backgroundColor: kBackground,
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            // HEADER
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: dark,
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(18),
+
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [kPrimary, kDark],
                 ),
               ),
-              child: const Row(
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Icon(Icons.dashboard, color: Colors.white),
-                  SizedBox(width: 10),
+                  Icon(Icons.person, color: Colors.white, size: 40),
+                  SizedBox(height: 10),
                   Text(
-                    "Client Dashboard",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    "Freelio",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Welcome Back!",
+                    style: TextStyle(color: Colors.white70),
                   ),
                 ],
               ),
             ),
 
-            // SEARCH
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: searchController,
-                onChanged: (v) => setState(() {}),
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: dark),
-                  hintText: "Search clients...",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: kPrimary),
+              title: const Text("Dashboard"),
+              onTap: () => Navigator.pushNamed(context, "/dashboard"),
             ),
 
-            // GRID
-            Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                itemCount: filteredClients.length,
+            ListTile(
+              leading: const Icon(Icons.folder, color: kPrimary),
+              title: const Text("Projects"),
+              onTap: () => Navigator.pushNamed(context, "/projectpage"),
+            ),
 
-                // 🔥 FIXED (NO OVERFLOW)
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.72,
-                ),
+            ListTile(
+              leading: const Icon(Icons.person, color: kPrimary),
+              title: const Text("Clients"),
+              onTap: () => Navigator.pushNamed(context, "/clientpage"),
+            ),
 
-                itemBuilder: (context, i) {
-                  final c = filteredClients[i];
+            ListTile(
+              leading: const Icon(Icons.payment, color: kPrimary),
+              title: const Text("Payments"),
+              onTap: () => Navigator.pushNamed(context, "/payement"),
+            ),
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ClientDetailScreen(client: c),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          )
-                        ],
-                      ),
+            Divider(color: kDivider),
 
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // TOP
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor:
-                                primary.withOpacity(0.2),
-                                child: Text(
-                                  c["name"]![0],
-                                  style: TextStyle(color: dark),
-                                ),
-                              ),
+            ListTile(
+              leading: const Icon(Icons.notifications, color: kPrimary),
+              title: const Text("Notifications"),
+              onTap: () => Navigator.pushNamed(context, "/notifications"),
+            ),
 
-                              PopupMenuButton(
-                                onSelected: (value) {
-                                  if (value == "edit") {
-                                    openSheet(index: i);
-                                  } else {
-                                    deleteClient(i);
-                                  }
-                                },
-                                itemBuilder: (_) => const [
-                                  PopupMenuItem(
-                                      value: "edit",
-                                      child: Text("Edit")),
-                                  PopupMenuItem(
-                                      value: "delete",
-                                      child: Text("Delete")),
-                                ],
-                              ),
-                            ],
-                          ),
+            ListTile(
+              leading: const Icon(Icons.share, color: kPrimary),
+              title: const Text("Share with Friend"),
+              onTap: () => Navigator.pushNamed(context, "/sharing"),
+            ),
 
-                          const SizedBox(height: 10),
+            ListTile(
+              leading: const Icon(Icons.call, color: kPrimary),
+              title: const Text("Contact Us"),
+              onTap: () => Navigator.pushNamed(context, "/contactus"),
+            ),
 
-                          Text(
-                            c["name"]!,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: textDark,
-                            ),
-                          ),
-
-                          Text(
-                            c["company"]!,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor(
-                                  c["status"] ?? "Active")
-                                  .withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              c["status"] ?? "Active",
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: statusColor(
-                                    c["status"] ?? "Active"),
-                              ),
-                            ),
-                          ),
-
-                          const Spacer(),
-
-                          Text(
-                            c["phone"]!,
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+            ListTile(
+              leading: const Icon(Icons.settings, color: kPrimary),
+              title: const Text("Profile & Account"),
+              onTap: () => Navigator.pushNamed(context, "/profile"),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kDark,
+        onPressed: () => openSheet(),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: onTap,
+        selectedItemColor: kPrimary,
+        unselectedItemColor: kTextSecondary.withOpacity(0.5),
+        backgroundColor: kBackground,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.folder), label: "Projects"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
+          BottomNavigationBarItem(icon: Icon(Icons.payment), label: "Payment"),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: "Deadline"),
+        ],
+      ),
+
+      // ✅ DIRECT BODY (NO HEADER)
+      body: Column(
+        children: [
+
+          // SEARCH
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              controller: searchController,
+              onChanged: (v) => setState(() {}),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search, color: kDark),
+                hintText: "Search clients...",
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+
+          // GRID
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: filteredClients.length,
+              gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.72,
+              ),
+              itemBuilder: (context, i) {
+                final c = filteredClients[i];
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            ClientDetailScreen(client: c),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor:
+                              kPrimary.withOpacity(0.2),
+                              child: Text(
+                                c["name"]![0],
+                                style: TextStyle(color: kDark),
+                              ),
+                            ),
+                            PopupMenuButton(
+                              onSelected: (value) {
+                                if (value == "edit") {
+                                  openSheet(index: i);
+                                } else {
+                                  deleteClient(i);
+                                }
+                              },
+                              itemBuilder: (_) => const [
+                                PopupMenuItem(
+                                    value: "edit",
+                                    child: Text("Edit")),
+                                PopupMenuItem(
+                                    value: "delete",
+                                    child: Text("Delete")),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Text(
+                          c["name"]!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: kTextPrimary,
+                          ),
+                        ),
+
+                        Text(
+                          c["company"]!,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: statusColor(
+                                c["status"] ?? "Active")
+                                .withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            c["status"] ?? "Active",
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: statusColor(
+                                  c["status"] ?? "Active"),
+                            ),
+                          ),
+                        ),
+
+                        const Spacer(),
+
+                        Text(
+                          c["phone"]!,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

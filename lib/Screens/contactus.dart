@@ -4,10 +4,11 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
 
-  final Color darkTeal = const Color(0xFF195A51);
-  final Color lightTeal = const Color(0xFF00C5AB);
+  static const Color kPrimary       = Color(0xFF29B2FE);
+  static const Color kDark          = Color(0xFF1D5C97);
+  static const Color kSurface       = Color(0xFFE8F6FF);
+  static const Color kBackground    = Color(0xFFFFFFFF);
 
-  // 📧 EMAIL
   Future<void> sendEmail() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
@@ -17,36 +18,27 @@ class ContactUsScreen extends StatelessWidget {
         'body': 'Hello, I need help with...'
       },
     );
-
     await _launch(emailUri);
   }
 
-  // 📞 CALL
   Future<void> makeCall() async {
     final Uri callUri = Uri(
       scheme: 'tel',
       path: '+923066473361',
     );
-
     await _launch(callUri);
   }
 
-  // 💬 WHATSAPP
   Future<void> openWhatsApp() async {
     final Uri whatsappUri = Uri.parse(
       "https://wa.me/923066473361?text=Hello%20I%20need%20help",
     );
-
     await _launch(whatsappUri);
   }
 
-  // 🔥 SAFE LAUNCHER (IMPORTANT FIX)
   Future<void> _launch(Uri uri) async {
     try {
-      if (!await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication,
-      )) {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
         debugPrint("Could not launch $uri");
       }
     } catch (e) {
@@ -57,10 +49,10 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
+      backgroundColor: kSurface,
 
       appBar: AppBar(
-        backgroundColor: darkTeal,
+        backgroundColor: kPrimary,
         title: const Text(
           "Contact Us",
           style: TextStyle(color: Colors.white),
@@ -72,12 +64,15 @@ class ContactUsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+
             // HEADER
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: darkTeal,
+                gradient: const LinearGradient(
+                  colors: [kPrimary, kDark],
+                ),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Column(
@@ -106,7 +101,7 @@ class ContactUsScreen extends StatelessWidget {
               icon: Icons.email,
               title: "Email Support",
               subtitle: "support@freelio.com",
-              color: lightTeal,
+              color: kPrimary,
               onTap: sendEmail,
             ),
 
@@ -122,7 +117,7 @@ class ContactUsScreen extends StatelessWidget {
               icon: Icons.chat,
               title: "WhatsApp",
               subtitle: "Chat instantly",
-              color: Colors.teal,
+              color: kDark,
               onTap: openWhatsApp,
             ),
           ],
@@ -142,12 +137,12 @@ class ContactUsScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         onTap: onTap,
-        tileColor: Colors.white,
+        tileColor: kBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.2),
+          backgroundColor: color.withOpacity(0.15),
           child: Icon(icon, color: color),
         ),
         title: Text(title),
